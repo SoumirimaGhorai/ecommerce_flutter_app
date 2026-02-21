@@ -264,36 +264,24 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     isLoading
                         ? const CircularProgressIndicator(color: Colors.white)
                         : InkWell(
-                      onTap: () async {
-                        setState(() => isLoading = true);
-                        try {
-                          context.read<CartBloc>().add(
-                            AddToCartEvent(
-                              productId: int.parse(currProduct!.id ?? '0'),
-                              qty: qty,
-                              color: selectedColor?.value.toString() ?? '',
-                            ),
-                          );
-
-                          _showSnackBar(
-                              context, "Item added to cart successfully");
-                        } catch (e) {
-                          _showSnackBar(context, "Error: $e");
-                        } finally {
-                          setState(() => isLoading = false);
-                        }
+                      onTap: () {
+                        context.read<CartBloc>().add(
+                          AddToCartEvent(
+                            productId: int.parse(currProduct!.id ?? '0'),
+                            qty: qty,
+                          ),
+                        );
+                        _showSnackBar(context, "Item added to cart successfully");
                       },
                       child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 41, vertical: 14),
+                        padding: const EdgeInsets.symmetric(horizontal: 41, vertical: 14),
                         decoration: BoxDecoration(
                           color: Colors.deepOrangeAccent,
                           borderRadius: BorderRadius.circular(50),
                         ),
                         child: const Text(
                           "Add to cart",
-                          style: TextStyle(
-                              color: Colors.white, fontSize: 18),
+                          style: TextStyle(color: Colors.white, fontSize: 18),
                         ),
                       ),
                     ),

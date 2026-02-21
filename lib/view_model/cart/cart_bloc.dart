@@ -1,73 +1,69 @@
-// cart_bloc.dart
-import 'package:bloc/bloc.dart';
-import 'package:e_commarce_project/core/constants/app_url.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../data/helper/api_helper.dart';
+import '../../data/model/cart_item_model.dart';
 import 'cart_event.dart';
 import 'cart_state.dart';
-import '../../data/model/cart_item_model.dart';
 
 class CartBloc extends Bloc<CartEvent, CartState> {
   final ApiHelper apiHelper;
+
   CartBloc({required this.apiHelper}) : super(CartInitialState()) {
-    on<FetchCartEvent>(_fetchCart);
-  //  on<UpdateCartQuantityEvent>(_updateQuantity);
-    on<DeleteCartItemEvent>(_deleteItem);
+    on<FetchCartEvent>(_fetchCartItems);
+    on<AddToCartEvent>(_addToCart);
+    on<UpdateCartQuantityEvent>(_updateQuantity);
+    on<DeleteCartItemEvent>(_deleteCartItem);
   }
 
-  Future<void> _fetchCart(FetchCartEvent event, Emitter<CartState> emit) async {
-    emit(CartLoadingState());
+  Future<void> _fetchCartItems(FetchCartEvent event, Emitter<CartState> emit) async {
     try {
-      final response = await apiHelper.getCartList(); // GET /view-cart
-
-      if (response['status'] == true) {
-        List<CartItemModel> cartItems = (response['data'] as List)
-            .map((e) => CartItemModel.fromJson(e))
-            .toList();
-        emit(CartLoadedState(cartItems: cartItems));
-      } else {
-        emit(CartFailureState(errorMsg: response['message']));
-      }
+      emit(CartLoadingState());
+      final res = await apiHelper.getCartList();
+      List<CartItemModel> items = (res['data'] as List)
+          .map((e) => CartItemModel.fromJson(e))
+          .toList();
+      emit(CartLoadedState(cartItems: items));
     } catch (e) {
-      emit(CartFailureState(errorMsg: e.toString()));
+      emit(CartErrorState(message: e.toString()));
     }
   }
 
-  // Future<void> _updateQuantity(UpdateCartQuantityEvent event, Emitter<CartState> emit) async {
-  //   emit(CartLoadingState());
-  //   try {
-  //     final response = await apiHelper.postAPI(
-  //       url: AppUrls.up
-  //       mBodyParams: {
-  //         "product_id": event.productId,
-  //         "quantity": event.newQuantity,
-  //       },
-  //     );
-  //
-  //     if (response['status'] == true) {
-  //       add(FetchCartEvent()); // Refresh cart
-  //     } else {
-  //       emit(CartFailureState(errorMsg: response['message']));
-  //     }
-  //   } catch (e) {
-  //     emit(CartFailureState(errorMsg: e.toString()));
-  //   }
-  // }
-
-  Future<void> _deleteItem(DeleteCartItemEvent event, Emitter<CartState> emit) async {
-    emit(CartLoadingState());
+  Future<void> _addToCart(AddToCartEvent event, Emitter<CartState> emit) async {
     try {
-      final response = await apiHelper.postAPI(
-        url: AppUrls.delete_cart_url,
-        mBodyParams: {"cart_id": event.cartId},
+      emit(CartLoadingState());
+      await apiHelper.updateCartQuantity(
+        productId: event.productId,
+        quantity: event.qty,
       );
-
-      if (response['status'] == true) {
-        add(FetchCartEvent()); // Refresh cart
-      } else {
-        emit(CartFailureState(errorMsg: response['message']));
-      }
+      // Fetch updated cart
+      final res = await apiHelper.getCartList();
+      List<CartItemModel> items = (res['data'] as List)
+          .map((e) => CartItemModel.fromJson(e))
+          .toList();
+      emit(CartLoadedState(cartItems: items));
     } catch (e) {
-      emit(CartFailureState(errorMsg: e.toString()));
+      emit(CartErrorState(message: e.toString()));
     }
   }
-}
+
+  Future<void> _updateQuantity(UpdateCartQuantityEvent event, Emitter<CartState> emit) async {
+    // optional: not used for ProductDetailPage setup
+  }
+
+  /// Delete cart item
+
+
+  Future<void> _deleteCartItem(DeleteCartItemEvent event, Emitter<CartState> emit) async {
+    if (state is CartLoadedState) {
+      final currentState = state as CartLoadedState;
+      try {
+        await apiHelper.deleteCart(cartId: int.parse(event.cartId));
+        final updatedList = currentState.cartItems
+            .where((item) => item.id != event.cartId)
+            .toList();
+        emit(CartLoadedState(cartItems: updatedList));
+      } catch (e) {
+        emit(CartErrorState(message: "Failed to delete item: $e"));
+      }
+    }
+  }
+  }

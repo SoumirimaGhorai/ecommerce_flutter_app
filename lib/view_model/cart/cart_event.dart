@@ -1,7 +1,13 @@
-// cart_event.dart
 abstract class CartEvent {}
 
 class FetchCartEvent extends CartEvent {}
+
+class AddToCartEvent extends CartEvent {
+  final int productId;
+  final int qty;
+
+  AddToCartEvent({required this.productId, required this.qty});
+}
 
 class UpdateCartQuantityEvent extends CartEvent {
   final String productId;
