@@ -7,6 +7,8 @@ import '../cart/cart_event.dart';
 import '../cart/cart_state.dart';
 
 class ProductDetailPage extends StatefulWidget {
+  const ProductDetailPage({super.key});
+
   @override
   State<ProductDetailPage> createState() => _ProductDetailPageState();
 }
@@ -15,14 +17,14 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   ProductModel? currProduct;
   int qty = 1;
   bool isLoading = false;
-
   int currentTab = 0;
   int currentDot = 0;
+  Color? selectedColor;
 
   @override
   Widget build(BuildContext context) {
-    currProduct =
-    ModalRoute.of(context)!.settings.arguments as ProductModel;
+    currProduct = ModalRoute.of(context)!.settings.arguments as ProductModel?;
+    selectedColor ??= Colors.brown; // default selected color
 
     return Scaffold(
       backgroundColor: const Color(0xffF0E8F2),
@@ -43,19 +45,19 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Image.network(
-                                currProduct!.image!,
+                                currProduct?.image ?? '',
                                 width: 200,
                                 height: 200,
+                                errorBuilder: (_, __, ___) =>
+                                const Icon(Icons.image, size: 100),
                               ),
-
-                              /// DOT INDICATOR
                               const SizedBox(height: 10),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: List.generate(3, (index) {
                                   return Container(
-                                    margin:
-                                    const EdgeInsets.symmetric(horizontal: 4),
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 4),
                                     width: currentDot == index ? 18 : 8,
                                     height: 8,
                                     decoration: BoxDecoration(
@@ -78,9 +80,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                           child: Row(
                             children: [
                               _circleIcon(
-                                icon: Icons.arrow_back_ios,
-                                onTap: () => Navigator.pop(context),
-                              ),
+                                  icon: Icons.arrow_back_ios,
+                                  onTap: () => Navigator.pop(context)),
                               const Spacer(),
                               _circleIcon(icon: Icons.share_outlined),
                               const SizedBox(width: 21),
@@ -109,13 +110,11 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            currProduct!.name ?? "",
+                            currProduct?.name ?? '',
                             style: const TextStyle(
                                 fontSize: 32, fontWeight: FontWeight.bold),
                           ),
-
                           const SizedBox(height: 8),
-
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -123,7 +122,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "₹${currProduct!.price ?? 0}",
+                                    "₹${currProduct?.price ?? 0}",
                                     style: const TextStyle(
                                         fontSize: 23,
                                         fontWeight: FontWeight.bold),
@@ -135,25 +134,20 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                           color: Colors.deepOrangeAccent),
                                       SizedBox(width: 4),
                                       Text("4.8 (320 reviews)",
-                                          style:
-                                          TextStyle(color: Colors.grey)),
+                                          style: TextStyle(color: Colors.grey)),
                                     ],
-                                  )
+                                  ),
                                 ],
                               ),
                               const Text("Seller: Tariqul Islam"),
                             ],
                           ),
-
                           const SizedBox(height: 16),
-
-                          /// COLOR TITLE
                           const Text(
                             "Color",
                             style: TextStyle(
                                 fontSize: 23, fontWeight: FontWeight.bold),
                           ),
-
                           const SizedBox(height: 11),
 
                           /// COLORS
@@ -161,16 +155,45 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                             height: 44,
                             child: ListView(
                               scrollDirection: Axis.horizontal,
-                              children: const [
-                                _ColorDot(color: Colors.orange),
-                                _ColorDot(color: Colors.brown, selected: true),
-                                _ColorDot(color: Colors.black),
-                                _ColorDot(color: Colors.amber),
-                                _ColorDot(color: Colors.red),
+                              children: [
+                                _ColorDot(
+                                  color: Colors.orange,
+                                  selected: selectedColor == Colors.orange,
+                                  onTap: () {
+                                    setState(() => selectedColor = Colors.orange);
+                                  },
+                                ),
+                                _ColorDot(
+                                  color: Colors.brown,
+                                  selected: selectedColor == Colors.brown,
+                                  onTap: () {
+                                    setState(() => selectedColor = Colors.brown);
+                                  },
+                                ),
+                                _ColorDot(
+                                  color: Colors.black,
+                                  selected: selectedColor == Colors.black,
+                                  onTap: () {
+                                    setState(() => selectedColor = Colors.black);
+                                  },
+                                ),
+                                _ColorDot(
+                                  color: Colors.amber,
+                                  selected: selectedColor == Colors.amber,
+                                  onTap: () {
+                                    setState(() => selectedColor = Colors.amber);
+                                  },
+                                ),
+                                _ColorDot(
+                                  color: Colors.red,
+                                  selected: selectedColor == Colors.red,
+                                  onTap: () {
+                                    setState(() => selectedColor = Colors.red);
+                                  },
+                                ),
                               ],
                             ),
                           ),
-
                           const SizedBox(height: 24),
 
                           /// ---------------- TABS ----------------
@@ -181,10 +204,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                               _tabButton("Reviews", 2),
                             ],
                           ),
-
                           const SizedBox(height: 16),
-
-                          /// TAB CONTENT
                           _tabContent(),
                         ],
                       ),
@@ -209,6 +229,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    /// Quantity Selector
                     StatefulBuilder(
                       builder: (context, ss) {
                         return Row(
@@ -220,8 +241,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                   ss(() {});
                                 }
                               },
-                              icon: const Icon(Icons.remove,
-                                  color: Colors.white),
+                              icon: const Icon(Icons.remove, color: Colors.white),
                             ),
                             Text(
                               "$qty",
@@ -233,25 +253,35 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                 qty++;
                                 ss(() {});
                               },
-                              icon: const Icon(Icons.add,
-                                  color: Colors.white),
+                              icon: const Icon(Icons.add, color: Colors.white),
                             ),
                           ],
                         );
                       },
                     ),
-                    InkWell(
-                      onTap: () {
-                        context.read<CartBloc>().add(
-                          AddToCartEvent(
-                            productId:
-                            int.parse(currProduct!.id!),
-                            qty: qty,
 
-                          ),
-                        );
+                    /// Add to Cart Button
+                    isLoading
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : InkWell(
+                      onTap: () async {
+                        setState(() => isLoading = true);
+                        try {
+                          context.read<CartBloc>().add(
+                            AddToCartEvent(
+                              productId: int.parse(currProduct!.id ?? '0'),
+                              qty: qty,
+                              color: selectedColor?.value.toString() ?? '',
+                            ),
+                          );
 
-                        _showSnackBar(context, "Item added to cart successfully");
+                          _showSnackBar(
+                              context, "Item added to cart successfully");
+                        } catch (e) {
+                          _showSnackBar(context, "Error: $e");
+                        } finally {
+                          setState(() => isLoading = false);
+                        }
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(
@@ -262,8 +292,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         ),
                         child: const Text(
                           "Add to cart",
-                          style:
-                          TextStyle(color: Colors.white, fontSize: 18),
+                          style: TextStyle(
+                              color: Colors.white, fontSize: 18),
                         ),
                       ),
                     ),
@@ -280,7 +310,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   /// TAB BUTTON
   Widget _tabButton(String title, int index) {
     final bool selected = currentTab == index;
-
     return Expanded(
       child: GestureDetector(
         onTap: () => setState(() => currentTab = index),
@@ -288,18 +317,15 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           margin: const EdgeInsets.symmetric(horizontal: 4),
           padding: const EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
-            color: selected
-                ? Colors.deepOrangeAccent
-                : Colors.grey.shade200,
+            color: selected ? Colors.deepOrangeAccent : Colors.grey.shade200,
             borderRadius: BorderRadius.circular(30),
           ),
           child: Center(
             child: Text(
               title,
               style: TextStyle(
-                color: selected ? Colors.white : Colors.black,
-                fontWeight: FontWeight.bold,
-              ),
+                  color: selected ? Colors.white : Colors.black,
+                  fontWeight: FontWeight.bold),
             ),
           ),
         ),
@@ -310,7 +336,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   /// TAB CONTENT
   Widget _tabContent() {
     return SingleChildScrollView(
-      padding: const EdgeInsets.only(bottom:80), // avoid bottom bar overlap
+      padding: const EdgeInsets.only(bottom: 80),
       child: _buildTabBody(),
     );
   }
@@ -318,17 +344,14 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   Widget _buildTabBody() {
     if (currentTab == 0) {
       return const Text(
-          "This android smartphone delivers powerful performance with a sleek design. "
-              "It features a 6.6-inch FHD+ AMOLED display, 8GB RAM, and a 5000mAh battery "
-              "with fast charging. Ideal for gaming, streaming, and daily use.\n\n"
-              "The 64MP triple camera setup captures stunning photos, while 5G connectivity "
-              "ensures ultra-fast internet speeds.",
-          style: TextStyle(
-            fontSize: 16,
-            height:1.3,
-          ) );
+        "This android smartphone delivers powerful performance with a sleek design. "
+            "It features a 6.6-inch FHD+ AMOLED display, 8GB RAM, and a 5000mAh battery "
+            "with fast charging. Ideal for gaming, streaming, and daily use.\n\n"
+            "The 64MP triple camera setup captures stunning photos, while 5G connectivity "
+            "ensures ultra-fast internet speeds.",
+        style: TextStyle(fontSize: 16, height: 1.3),
+      );
     }
-
     if (currentTab == 1) {
       return const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -351,31 +374,19 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         ],
       );
     }
-
     return const Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: const [
-        Text(
-          "⭐ 4.8 / 5",
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
+      children: [
+        Text("⭐ 4.8 / 5",
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         SizedBox(height: 10),
-
         Text("• Excellent display quality and smooth performance"),
-        SizedBox(height: 4),
         Text("• Battery easily lasts a full day"),
-        SizedBox(height: 4),
         Text("• Camera quality is impressive for the price"),
-        SizedBox(height: 4),
         Text("• Fast charging is very useful"),
-        SizedBox(height: 4),
         Text("• Good value for money"),
         SizedBox(height: 10),
-
-        Text(
-          "User Review:",
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
+        Text("User Review:", style: TextStyle(fontWeight: FontWeight.bold)),
         SizedBox(height: 4),
         Text(
           "\"I am very happy with this phone. The display and performance are "
@@ -385,6 +396,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       ],
     );
   }
+
   Widget _circleIcon({required IconData icon, VoidCallback? onTap}) {
     return Container(
       width: 50,
@@ -403,30 +415,34 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 class _ColorDot extends StatelessWidget {
   final Color color;
   final bool selected;
+  final VoidCallback? onTap;
 
-  const _ColorDot({required this.color, this.selected = false});
+  const _ColorDot({required this.color, this.selected = false, this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(right: 12),
-      width: 44,
-      height: 44,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: selected ? Border.all(color: color) : null,
-      ),
-      child: Center(
-        child: Container(
-          width: 36,
-          height: 36,
-          decoration:
-          BoxDecoration(color: color, shape: BoxShape.circle),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.only(right: 12),
+        width: 44,
+        height: 44,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: selected ? Border.all(color: color, width: 3) : null,
+        ),
+        child: Center(
+          child: Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+          ),
         ),
       ),
     );
   }
 }
+
 void _showSnackBar(BuildContext context, String message) {
   ScaffoldMessenger.of(context).clearSnackBars();
   ScaffoldMessenger.of(context).showSnackBar(
@@ -435,9 +451,7 @@ void _showSnackBar(BuildContext context, String message) {
       backgroundColor: Colors.green,
       duration: const Duration(seconds: 2),
       behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     ),
   );
 }

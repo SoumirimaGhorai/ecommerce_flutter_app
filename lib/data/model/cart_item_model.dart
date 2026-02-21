@@ -15,13 +15,17 @@ class CartItemModel {
     this.image,
   });
 
-  CartItemModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'].toString();
-    productId = json['product_id'].toString();
-    name = json['name'];
-    price = json['price'];
-    quantity = json['quantity'];
-    image = json['image'];
+  factory CartItemModel.fromJson(Map<String, dynamic> json) {
+    return CartItemModel(
+      id: json['id'].toString(),
+      productId: json['product_id'].toString(),
+      name: json['name'],
+      price: json['price'].toString(),
+      quantity: json['quantity'] is int
+          ? json['quantity']
+          : int.tryParse(json['quantity'].toString()) ?? 1,
+      image: json['image'],
+    );
   }
 
   Map<String, dynamic> toJson() {

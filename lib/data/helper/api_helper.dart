@@ -102,7 +102,6 @@ class ApiHelper {
 
     return jsonDecode(response.body);
   }
-
   /// ========================= DELETE CART ITEM =========================
   Future<dynamic> deleteCart({required int cartId}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

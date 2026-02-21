@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../../data/model/cart_item_model.dart';
 import '../../../../view_model/cart/cart_bloc.dart';
 import '../../../../view_model/cart/cart_event.dart';
@@ -17,6 +18,14 @@ class _CartPageState extends State<CartPage> {
   void initState() {
     super.initState();
     context.read<CartBloc>().add(FetchCartEvent());
+  }
+
+  int _calculateTotal(List<CartItemModel> items) {
+    int total = 0;
+    for (var item in items) {
+      total += int.parse(item.price ?? "0") * (item.quantity ?? 1);
+    }
+    return total;
   }
 
   @override
@@ -38,11 +47,6 @@ class _CartPageState extends State<CartPage> {
               return const Center(child: Text("Cart is empty"));
             }
 
-            int totalPrice = state.cartItems.fold(
-                0,
-                    (sum, item) =>
-                sum + (int.parse(item.price!) * item.quantity!));
-
             return Column(
               children: [
                 Expanded(
@@ -50,39 +54,37 @@ class _CartPageState extends State<CartPage> {
                     itemCount: state.cartItems.length,
                     itemBuilder: (context, index) {
                       final CartItemModel item = state.cartItems[index];
-
                       return Card(
                         margin: const EdgeInsets.all(8),
                         child: ListTile(
                           leading: Image.network(
                             item.image ?? "",
                             width: 60,
-                            errorBuilder: (_, __, ___) =>
-                            const Icon(Icons.image),
+                            errorBuilder: (_, __, ___) => const Icon(Icons.image),
                           ),
                           title: Text(item.name ?? ""),
                           subtitle: Row(
                             children: [
                               IconButton(
-                                onPressed: item.quantity! > 1
-                                    ? () {
-                                  context.read<CartBloc>().add(
-                                    UpdateCartQuantityEvent(
-                                      productId: item.productId!
-                                      newQuantity: item.quantity! - 1,
-                                    ),
-                                  );
-                                }
-                                    : null,
+                                onPressed: () {
+                                  if ((item.quantity ?? 1) > 1) {
+                                    context.read<CartBloc>().add(
+                                      UpdateCartQuantityEvent(
+                                        productId: item.productId!,
+                                        newQuantity: (item.quantity ?? 1) - 1,
+                                      ),
+                                    );
+                                  }
+                                },
                                 icon: const Icon(Icons.remove),
                               ),
-                              Text("${item.quantity}"),
+                              Text("${item.quantity ?? 1}"),
                               IconButton(
                                 onPressed: () {
                                   context.read<CartBloc>().add(
                                     UpdateCartQuantityEvent(
-                                      productId: item.productId ?? 0,      // default to 0 if null
-                                      newQuantity: (item.quantity ?? 1) + 1, // default to 1 if null
+                                      productId: item.productId!,
+                                      newQuantity: (item.quantity ?? 1) + 1,
                                     ),
                                   );
                                 },
@@ -91,12 +93,10 @@ class _CartPageState extends State<CartPage> {
                             ],
                           ),
                           trailing: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                "₹${int.parse(item.price!) * item.quantity!}",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
+                                "₹${int.parse(item.price ?? "0") * (item.quantity ?? 1)}",
+                                style: const TextStyle(fontWeight: FontWeight.bold),
                               ),
                               IconButton(
                                 onPressed: () {
@@ -119,16 +119,8 @@ class _CartPageState extends State<CartPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        "Total:",
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        "₹$totalPrice",
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
+                      const Text("Total", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      Text("₹${_calculateTotal(state.cartItems)}", style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                     ],
                   ),
                 ),
