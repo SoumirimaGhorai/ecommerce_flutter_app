@@ -86,6 +86,62 @@ class ApiHelper {
       throw NoInternetException(exceptionMsg: "No internet connection");
     }
   }
+
+  Future<dynamic> getCartList() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString(AppConstants.PREF_USER_TOKEN) ?? '';
+
+    final response = await http.get(
+      Uri.parse(
+         AppUrls.view_cart_url),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    return jsonDecode(response.body);
+  }
+
+  /// ========================= DELETE CART ITEM =========================
+  Future<dynamic> deleteCart({required int cartId}) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString(AppConstants.PREF_USER_TOKEN) ?? '';
+
+    final response = await http.post(
+      Uri.parse(AppUrls.delete_cart_url),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({'cart_id': cartId}),
+    );
+
+    return handleResponse(res: response);
+  }
+
+  /// ========================= UPDATE CART QUANTITY =========================
+  Future<dynamic> updateCartQuantity({
+    required int productId,
+    required int quantity,
+  }) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString(AppConstants.PREF_USER_TOKEN) ?? '';
+
+    final response = await http.post(
+      Uri.parse(AppUrls.add_to_cart_url),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({
+        "product_id": productId,
+        "quantity": quantity,
+      }),
+    );
+    return handleResponse(res: response);
+  }
+
   /// HANDLE API RESPONSE
   /// =========================
   dynamic handleResponse({required http.Response res}) {

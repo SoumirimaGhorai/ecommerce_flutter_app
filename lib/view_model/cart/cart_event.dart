@@ -6,3 +6,13 @@ class AddToCartEvent extends CartEvent {
 }
 
 class FetchCartEvent extends CartEvent{}
+class DeleteCartItemEvent extends CartEvent {
+  final int cartId;
+  DeleteCartItemEvent({required this.cartId});
+}
+
+class UpdateCartQuantityEvent extends CartEvent {
+  final int productId;
+  final int newQuantity;
+  UpdateCartQuantityEvent({required this.productId, required this.newQuantity});
+}

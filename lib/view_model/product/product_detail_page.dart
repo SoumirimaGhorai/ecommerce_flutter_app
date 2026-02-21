@@ -198,7 +198,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             Positioned(
               bottom: 0,
               child: Container(
-                height: 70,
+                height: 88,
                 margin: const EdgeInsets.all(20),
                 padding: const EdgeInsets.symmetric(horizontal: 21),
                 width: MediaQuery.of(context).size.width - 40,
@@ -247,12 +247,15 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                             productId:
                             int.parse(currProduct!.id!),
                             qty: qty,
+
                           ),
                         );
+
+                        _showSnackBar(context, "Item added to cart successfully");
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 30, vertical: 16),
+                            horizontal: 41, vertical: 14),
                         decoration: BoxDecoration(
                           color: Colors.deepOrangeAccent,
                           borderRadius: BorderRadius.circular(50),
@@ -423,4 +426,18 @@ class _ColorDot extends StatelessWidget {
       ),
     );
   }
+}
+void _showSnackBar(BuildContext context, String message) {
+  ScaffoldMessenger.of(context).clearSnackBars();
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(message),
+      backgroundColor: Colors.green,
+      duration: const Duration(seconds: 2),
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+    ),
+  );
 }

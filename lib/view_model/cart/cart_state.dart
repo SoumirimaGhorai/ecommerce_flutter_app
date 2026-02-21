@@ -1,10 +1,17 @@
-abstract class CartState{}
+import '../../../../data/model/cart_item_model.dart';
 
-class CartInitialState extends CartState{}
-class CartLoadingState extends CartState{}
-class CartSuccessState extends CartState{}
-class CartLoadedState extends CartState{}
-class CartFailureState extends CartState{
-  String errorMsg;
+abstract class CartState {}
+
+class CartInitialState extends CartState {}
+
+class CartLoadingState extends CartState {}
+
+class CartLoadedState extends CartState {
+  final List<CartItemModel> cartItems;
+  CartLoadedState({required this.cartItems});
+}
+
+class CartFailureState extends CartState {
+  final String errorMsg;
   CartFailureState({required this.errorMsg});
 }
