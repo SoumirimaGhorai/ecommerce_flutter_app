@@ -141,6 +141,33 @@ class ApiHelper {
     return handleResponse(res: response);
   }
 
+
+  /// =========================
+  /// GET ORDER LIST
+  /// =========================
+  Future<dynamic> getOrders() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String token =
+          prefs.getString(AppConstants.PREF_USER_TOKEN) ?? "";
+
+      final response = await http.post(
+        Uri.parse(AppUrls.get_order_url),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token",
+        },
+      );
+
+      return handleResponse(res: response);
+    } on SocketException {
+      throw NoInternetException(
+        exceptionMsg: "No internet connection",
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
   /// HANDLE API RESPONSE
   /// =========================
   dynamic handleResponse({required http.Response res}) {

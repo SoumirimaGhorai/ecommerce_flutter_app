@@ -1,5 +1,6 @@
-import 'package:e_commarce_project/view_model/cart/cart_bloc.dart';
-import 'package:e_commarce_project/view_model/category/category_bloc.dart';
+import 'package:e_commarce_project/view_model/cart/bloc/cart_bloc.dart';
+import 'package:e_commarce_project/view_model/category/bloc/category_bloc.dart';
+import 'package:e_commarce_project/view_model/order/bloc/order_bloc.dart';
 import 'package:e_commarce_project/view_model/product/bloc/product_bloc.dart';
 import 'package:e_commarce_project/view_model/user/bloc/user_bloc.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,7 @@ void main() {
         BlocProvider(create: (context) => ProductBloc(apiHelper: ApiHelper())),
         BlocProvider(create: (context) => CartBloc(apiHelper: ApiHelper())),
         BlocProvider(create: (context) => CategoryBloc(apiHelper: ApiHelper())),
+        BlocProvider(create: (context) => OrderBloc(apiHelper:ApiHelper())),
       ],
       child: MyApp(),
     ),
@@ -28,7 +30,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      title: 'E Commarce ',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),

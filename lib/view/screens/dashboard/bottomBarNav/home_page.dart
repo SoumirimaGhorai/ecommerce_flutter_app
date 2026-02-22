@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/constants/app_route.dart';
-import '../../../../view_model/category/category_bloc.dart';
-import '../../../../view_model/category/category_event.dart';
-import '../../../../view_model/category/category_state.dart';
+import '../../../../view_model/category/bloc/category_bloc.dart';
+import '../../../../view_model/category/bloc/category_event.dart';
+import '../../../../view_model/category/bloc/category_state.dart';
+import '../../../../view_model/order/order_history_page.dart';
 import '../../../../view_model/product/all_product_page.dart';
 import '../../../../view_model/product/bloc/product_bloc.dart';
 import '../../../../view_model/product/bloc/product_event.dart';
@@ -174,14 +175,21 @@ class _HomePageState extends State<HomePage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: Color(0xffF0E8F2),
-                      shape: BoxShape.circle,
+                  InkWell(
+                    onTap: () {
+                     Navigator.pushNamed(context, AppRoutes.route_order_history_page);
+                    },
+                    child: Container(
+                      width: 50,
+                      height: 50,
+                      decoration: const BoxDecoration(
+                        color: Color(0xffF0E8F2),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Center(
+                        child: Icon(Icons.menu, color: Colors.black),
+                      ),
                     ),
-                    child: Center(child: Icon(Icons.menu, color: Colors.black)),
                   ),
                   Container(
                     width: 50,

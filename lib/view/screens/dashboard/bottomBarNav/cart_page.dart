@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../../view_model/cart/cart_bloc.dart';
-import '../../../../view_model/cart/cart_event.dart';
-import '../../../../view_model/cart/cart_state.dart';
+import '../../../../view_model/cart/bloc/cart_bloc.dart';
+import '../../../../view_model/cart/bloc/cart_event.dart';
+import '../../../../view_model/cart/bloc/cart_state.dart';
+import '../../../../view_model/cart/checkout_page.dart';
 
 class CartPage extends StatelessWidget {
   const CartPage({super.key});
@@ -17,7 +17,7 @@ class CartPage extends StatelessWidget {
       body: BlocBuilder<CartBloc, CartState>(
         builder: (context, state) {
           if (state is CartLoadingState) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child:Text('No internet connection'));
           }
 
           if (state is CartErrorState) {
@@ -26,11 +26,11 @@ class CartPage extends StatelessWidget {
 
           if (state is CartLoadedState) {
             final cartItems = state.cartItems;
+
             if (cartItems.isEmpty) {
               return const Center(child: Text('Your cart is empty'));
             }
 
-            // Calculate total price
             double total = 0;
             for (var item in cartItems) {
               total += (double.tryParse(item.price ?? '0') ?? 0) *
@@ -39,6 +39,7 @@ class CartPage extends StatelessWidget {
 
             return Column(
               children: [
+                /// Cart list
                 Expanded(
                   child: ListView.builder(
                     itemCount: cartItems.length,
@@ -52,28 +53,18 @@ class CartPage extends StatelessWidget {
                             item.image ?? '',
                             width: 60,
                             height: 60,
-                            errorBuilder: (_, __, ___) =>
+                            errorBuilder: (_, _, _) =>
                             const Icon(Icons.image, size: 50),
                           ),
                           title: Text(item.name ?? ''),
-                          subtitle: Text('Qty: ${item.quantity} | ₹${item.price}'),
+                          subtitle: Text(
+                              'Qty: ${item.quantity} | ₹${item.price}'),
                           trailing: IconButton(
                             icon: const Icon(Icons.delete, color: Colors.red),
                             onPressed: () {
                               context.read<CartBloc>().add(
-                                DeleteCartItemEvent(cartId: item.id ?? ''),
-                              );
-
-                              ScaffoldMessenger.of(context).clearSnackBars();
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('${item.name} removed from cart'),
-                                  backgroundColor: Colors.green,
-                                  duration: const Duration(seconds: 2),
-                                  behavior: SnackBarBehavior.floating,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
+                                DeleteCartItemEvent(
+                                  cartId: item.id ?? '',
                                 ),
                               );
                             },
@@ -84,9 +75,14 @@ class CartPage extends StatelessWidget {
                   ),
                 ),
 
-                // Total Price and Checkout Button
-                Container(decoration: BoxDecoration(borderRadius: BorderRadius.circular(35),color: Colors.grey.shade200,),
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                /// 🔹 Total + Checkout
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade200,
+                    borderRadius: BorderRadius.circular(35),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 20, vertical: 16),
                   child: Column(
                     children: [
                       Row(
@@ -110,12 +106,9 @@ class CartPage extends StatelessWidget {
                         height: 50,
                         child: ElevatedButton(
                           onPressed: () {
-                            // TODO: Handle checkout logic here
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text('Proceed to checkout'),
-                                backgroundColor: Colors.blue,
-                                duration: Duration(seconds: 2),
                               ),
                             );
                           },
@@ -127,7 +120,8 @@ class CartPage extends StatelessWidget {
                           ),
                           child: const Text(
                             'Checkout',
-                            style: TextStyle(fontSize: 18, color: Colors.white),
+                            style:
+                            TextStyle(fontSize: 18, color: Colors.white),
                           ),
                         ),
                       ),
@@ -141,6 +135,18 @@ class CartPage extends StatelessWidget {
           return const SizedBox.shrink();
         },
       ),
+    );
+  }
+
+  Widget _circleIcon(IconData icon) {
+    return Container(
+      width: 50,
+      height: 50,
+      decoration: const BoxDecoration(
+        color: Color(0xffF0E8F2),
+        shape: BoxShape.circle,
+      ),
+      child: Icon(icon, color: Colors.black),
     );
   }
 }

@@ -7,6 +7,8 @@ import 'bottomBarNav/menu_page.dart';
 import 'bottomBarNav/profile_page.dart';
 
 class DashBoardPage extends StatefulWidget {
+  const DashBoardPage({super.key});
+
   @override
   State<DashBoardPage> createState() => _DashBoardPageState();
 }
