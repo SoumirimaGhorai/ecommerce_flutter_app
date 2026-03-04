@@ -4,8 +4,8 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../core/constants/app_url.dart';
 import '../../core/constants/app_constant.dart';
+import '../../core/constants/app_url.dart';
 import 'api_exception.dart';
 
 class ApiHelper {
@@ -93,7 +93,7 @@ class ApiHelper {
 
     final response = await http.get(
       Uri.parse(
-         AppUrls.view_cart_url),
+          AppUrls.view_cart_url),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',

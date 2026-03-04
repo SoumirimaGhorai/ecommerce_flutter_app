@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../data/helper/api_helper.dart';
-import '../../../data/model/category_model.dart';
+import '../../data/helper/api_helper.dart';
+import '../../data/model/category_model.dart';
 import 'category_event.dart';
 import 'category_state.dart';
 

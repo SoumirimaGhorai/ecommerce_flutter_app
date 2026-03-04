@@ -1,8 +1,10 @@
-import 'package:e_commarce_project/view_model/cart/bloc/cart_bloc.dart';
-import 'package:e_commarce_project/view_model/category/bloc/category_bloc.dart';
-import 'package:e_commarce_project/view_model/order/bloc/order_bloc.dart';
-import 'package:e_commarce_project/view_model/product/bloc/product_bloc.dart';
-import 'package:e_commarce_project/view_model/user/bloc/user_bloc.dart';
+
+
+import 'package:e_commarce_project/view_model_bloc/cart/cart_bloc.dart';
+import 'package:e_commarce_project/view_model_bloc/category/category_bloc.dart';
+import 'package:e_commarce_project/view_model_bloc/order/order_bloc.dart';
+import 'package:e_commarce_project/view_model_bloc/product/product_bloc.dart';
+import 'package:e_commarce_project/view_model_bloc/user/user_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/constants/app_route.dart';
@@ -17,6 +19,7 @@ void main() {
         BlocProvider(create: (context) => CartBloc(apiHelper: ApiHelper())),
         BlocProvider(create: (context) => CategoryBloc(apiHelper: ApiHelper())),
         BlocProvider(create: (context) => OrderBloc(apiHelper:ApiHelper())),
+        //BlocProvider(create: (context) => CreateOrderBloc(apiHelper:ApiHelper())),
       ],
       child: MyApp(),
     ),

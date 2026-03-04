@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../core/utils/ui_helper.dart';
-import '../../view_model/user/bloc/user_bloc.dart';
-import '../../view_model/user/bloc/user_event.dart';
-import '../../view_model/user/bloc/user_state.dart';
+import '../../view_model_bloc/user/user_bloc.dart';
+import '../../view_model_bloc/user/user_event.dart';
+import '../../view_model_bloc/user/user_state.dart';
+
 
 class SignUpPage extends StatefulWidget {
+  const SignUpPage({super.key});
+
   @override
   State<SignUpPage> createState() => _SignUpPageState();
 }

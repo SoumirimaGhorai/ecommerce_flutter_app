@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../view_model/product/bloc/product_bloc.dart';
-import '../../view_model/product/bloc/product_state.dart';
-import '../../core/constants/app_route.dart';
+import '../../../core/constants/app_route.dart';
+import '../../../view_model_bloc/product/product_bloc.dart';
+import '../../../view_model_bloc/product/product_state.dart';
 
 class AllProductPage extends StatelessWidget {
   const AllProductPage({super.key});

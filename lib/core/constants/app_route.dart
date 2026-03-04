@@ -1,15 +1,13 @@
 
 
-import 'package:e_commarce_project/view_model/order/order_history_page.dart';
-import 'package:e_commarce_project/view_model/product/all_product_page.dart';
+import 'package:e_commarce_project/view/screens/navigation_drawer/order_history_page.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
 import '../../view/screens/dashboard/dashboard_page.dart';
 import '../../view/screens/login_page.dart';
 import '../../view/screens/sign_up_page.dart';
 import '../../view/screens/splash_page.dart';
-import '../../view_model/order/order_details_page.dart';
-import '../../view_model/product/product_detail_page.dart';
+import '../../view/screens/product/all_product_page.dart';
+import '../../view/screens/product/product_detail_page.dart';
 
 class AppRoutes{
   static final String route_splash = "/";
@@ -30,6 +28,7 @@ class AppRoutes{
     route_detail_page: (context) => ProductDetailPage(),
     route_product_page:(context)=>AllProductPage(),
     route_order_history_page:(context)=>OrderHistoryPage(),
+
 
 
 

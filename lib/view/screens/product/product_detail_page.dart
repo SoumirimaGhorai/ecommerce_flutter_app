@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../data/model/product_model.dart';
-import '../cart/bloc/cart_bloc.dart';
-import '../cart/bloc/cart_event.dart';
-import '../cart/bloc/cart_state.dart';
+import '../../../data/model/product_model.dart';
+import '../../../view_model_bloc/cart/cart_bloc.dart';
+import '../../../view_model_bloc/cart/cart_event.dart';
+
 
 class ProductDetailPage extends StatefulWidget {
   const ProductDetailPage({super.key});
@@ -20,6 +20,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   int currentTab = 0;
   int currentDot = 0;
   Color? selectedColor;
+  bool isAddedToCart = false;
 
   @override
   Widget build(BuildContext context) {
@@ -264,24 +265,32 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     isLoading
                         ? const CircularProgressIndicator(color: Colors.white)
                         : InkWell(
-                      onTap: () {
+                      onTap:   isAddedToCart
+                          ? null
+                          : () {
                         context.read<CartBloc>().add(
                           AddToCartEvent(
                             productId: int.parse(currProduct!.id ?? '0'),
                             qty: qty,
                           ),
                         );
-                        _showSnackBar(context, "Item added to cart successfully");
+                        setState(() {
+                          isAddedToCart = true;
+                        });
+
+                        _showSnackBar(context, "Item added to  successfully");
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 41, vertical: 14),
                         decoration: BoxDecoration(
-                          color: Colors.deepOrangeAccent,
+                          color: isAddedToCart
+                              ? Colors.brown
+                              : Colors.deepOrangeAccent,
                           borderRadius: BorderRadius.circular(50),
                         ),
-                        child: const Text(
-                          "Add to cart",
-                          style: TextStyle(color: Colors.white, fontSize: 18),
+                        child: Text(
+                          isAddedToCart ? "Added" : "Add to cart",
+                          style: const TextStyle(color: Colors.white, fontSize: 18),
                         ),
                       ),
                     ),
@@ -443,3 +452,7 @@ void _showSnackBar(BuildContext context, String message) {
     ),
   );
 }
+
+
+
+

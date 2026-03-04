@@ -5,7 +5,7 @@ class AppException implements Exception {
   AppException({required this.title, required this.msg});
 
   @override
-  String toString() => msg; // ✅ IMPORTANT (UI shows only message)
+  String toString() => msg;
 }
 
 class NoInternetException extends AppException {

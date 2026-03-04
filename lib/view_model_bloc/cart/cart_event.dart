@@ -1,5 +1,7 @@
 abstract class CartEvent {}
 
+class LoadLocalCartEvent extends CartEvent {}
+
 class FetchCartEvent extends CartEvent {}
 
 class AddToCartEvent extends CartEvent {

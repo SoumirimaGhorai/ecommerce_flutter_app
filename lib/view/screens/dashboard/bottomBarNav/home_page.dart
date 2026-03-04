@@ -4,14 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/constants/app_route.dart';
-import '../../../../view_model/category/bloc/category_bloc.dart';
-import '../../../../view_model/category/bloc/category_event.dart';
-import '../../../../view_model/category/bloc/category_state.dart';
-import '../../../../view_model/order/order_history_page.dart';
-import '../../../../view_model/product/all_product_page.dart';
-import '../../../../view_model/product/bloc/product_bloc.dart';
-import '../../../../view_model/product/bloc/product_event.dart';
-import '../../../../view_model/product/bloc/product_state.dart';
+import '../../../../view_model_bloc/category/category_bloc.dart';
+import '../../../../view_model_bloc/category/category_event.dart';
+import '../../../../view_model_bloc/category/category_state.dart';
+import '../../../../view_model_bloc/product/product_bloc.dart';
+import '../../../../view_model_bloc/product/product_event.dart';
+import '../../../../view_model_bloc/product/product_state.dart';
+import '../../product/all_product_page.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -177,7 +176,7 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   InkWell(
                     onTap: () {
-                     Navigator.pushNamed(context, AppRoutes.route_order_history_page);
+                      Navigator.pushNamed(context, AppRoutes.route_order_history_page);
                     },
                     child: Container(
                       width: 50,
@@ -417,7 +416,7 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                     child: Column(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                      MainAxisAlignment.center,
                                       children: [
                                         Image.network(
                                           state.products[index].image ??
@@ -438,7 +437,7 @@ class _HomePageState extends State<HomePage> {
                                         SizedBox(height: 11),
                                         Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                          MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
                                               "₹ ${state.products[index].price}",
@@ -450,18 +449,18 @@ class _HomePageState extends State<HomePage> {
 
                                             Row(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment.end,
+                                              MainAxisAlignment.end,
                                               spacing: 0,
                                               children: List.generate(
                                                 productData[index]["colorList"]
-                                                            .length >
-                                                        4
+                                                    .length >
+                                                    4
                                                     ? 4
                                                     : productData[index]["colorList"]
-                                                          .length,
-                                                (childIndex) {
+                                                    .length,
+                                                    (childIndex) {
                                                   if (productData[index]["colorList"]
-                                                          .length >
+                                                      .length >
                                                       4) {
                                                     print(
                                                       (productData[index]["colorList"]
@@ -472,22 +471,22 @@ class _HomePageState extends State<HomePage> {
                                                         width: 22,
                                                         height: 22,
                                                         decoration:
-                                                            BoxDecoration(
-                                                              shape: BoxShape
-                                                                  .circle,
-                                                              color: Colors
-                                                                  .transparent,
-                                                              border: Border.all(
-                                                                color:
-                                                                    Colors.grey,
-                                                              ),
-                                                            ),
+                                                        BoxDecoration(
+                                                          shape: BoxShape
+                                                              .circle,
+                                                          color: Colors
+                                                              .transparent,
+                                                          border: Border.all(
+                                                            color:
+                                                            Colors.grey,
+                                                          ),
+                                                        ),
                                                         child: Center(
                                                           child: Text(
                                                             "+${(productData[index]["colorList"].length - 3)}",
                                                             style: TextStyle(
                                                               color:
-                                                                  Colors.grey,
+                                                              Colors.grey,
                                                               fontSize: 10,
                                                             ),
                                                           ),
@@ -506,7 +505,7 @@ class _HomePageState extends State<HomePage> {
                                                                 decoration: BoxDecoration(
                                                                   border: Border.all(
                                                                     color:
-                                                                        productData[index]["colorList"][childIndex],
+                                                                    productData[index]["colorList"][childIndex],
                                                                   ),
                                                                   shape: BoxShape
                                                                       .circle,
@@ -515,14 +514,14 @@ class _HomePageState extends State<HomePage> {
                                                               Center(
                                                                 child: Container(
                                                                   margin:
-                                                                      EdgeInsets.all(
-                                                                        3,
-                                                                      ),
+                                                                  EdgeInsets.all(
+                                                                    3,
+                                                                  ),
                                                                   width: 22,
                                                                   height: 22,
                                                                   decoration: BoxDecoration(
                                                                     color:
-                                                                        productData[index]["colorList"][childIndex],
+                                                                    productData[index]["colorList"][childIndex],
                                                                     shape: BoxShape
                                                                         .circle,
                                                                   ),
@@ -534,14 +533,14 @@ class _HomePageState extends State<HomePage> {
                                                       } else {
                                                         return Container(
                                                           margin:
-                                                              EdgeInsets.all(3),
+                                                          EdgeInsets.all(3),
                                                           width: 19,
                                                           height: 19,
                                                           decoration: BoxDecoration(
                                                             color:
-                                                                productData[index]["colorList"][childIndex],
+                                                            productData[index]["colorList"][childIndex],
                                                             shape:
-                                                                BoxShape.circle,
+                                                            BoxShape.circle,
                                                           ),
                                                         );
                                                       }
@@ -559,7 +558,7 @@ class _HomePageState extends State<HomePage> {
                                                               decoration: BoxDecoration(
                                                                 border: Border.all(
                                                                   color:
-                                                                      productData[index]["colorList"][childIndex],
+                                                                  productData[index]["colorList"][childIndex],
                                                                 ),
                                                                 shape: BoxShape
                                                                     .circle,
@@ -568,14 +567,14 @@ class _HomePageState extends State<HomePage> {
                                                             Center(
                                                               child: Container(
                                                                 margin:
-                                                                    EdgeInsets.all(
-                                                                      3,
-                                                                    ),
+                                                                EdgeInsets.all(
+                                                                  3,
+                                                                ),
                                                                 width: 22,
                                                                 height: 22,
                                                                 decoration: BoxDecoration(
                                                                   color:
-                                                                      productData[index]["colorList"][childIndex],
+                                                                  productData[index]["colorList"][childIndex],
                                                                   shape: BoxShape
                                                                       .circle,
                                                                 ),
@@ -593,9 +592,9 @@ class _HomePageState extends State<HomePage> {
                                                         height: 19,
                                                         decoration: BoxDecoration(
                                                           color:
-                                                              productData[index]["colorList"][childIndex],
+                                                          productData[index]["colorList"][childIndex],
                                                           shape:
-                                                              BoxShape.circle,
+                                                          BoxShape.circle,
                                                         ),
                                                       );
                                                     }
@@ -650,4 +649,3 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-///

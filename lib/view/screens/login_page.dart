@@ -3,11 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../core/constants/app_route.dart';
 import '../../core/utils/ui_helper.dart';
-import '../../view_model/user/bloc/user_bloc.dart';
-import '../../view_model/user/bloc/user_event.dart';
-import '../../view_model/user/bloc/user_state.dart';
+import '../../view_model_bloc/user/user_bloc.dart';
+import '../../view_model_bloc/user/user_event.dart';
+import '../../view_model_bloc/user/user_state.dart';
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
   @override
   State<LoginPage> createState() => _LoginPageState();
 }

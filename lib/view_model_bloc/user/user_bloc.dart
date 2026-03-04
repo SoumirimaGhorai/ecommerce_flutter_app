@@ -1,11 +1,11 @@
 import 'package:bloc/bloc.dart';
-import 'package:e_commarce_project/view_model/user/bloc/user_event.dart';
-import 'package:e_commarce_project/view_model/user/bloc/user_state.dart';
+import 'package:e_commarce_project/view_model_bloc/user/user_event.dart';
+import 'package:e_commarce_project/view_model_bloc/user/user_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../../core/constants/app_constant.dart';
-import '../../../../core/constants/app_url.dart';
-import '../../../../data/helper/api_helper.dart';
+import '../../../core/constants/app_constant.dart';
+import '../../../core/constants/app_url.dart';
+import '../../../data/helper/api_helper.dart';
 
 class UserBloc extends Bloc<UserEvent, UserState> {
   ApiHelper apiHelper;

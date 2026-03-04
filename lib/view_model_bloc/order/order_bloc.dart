@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../data/helper/api_helper.dart';
-import '../../../data/model/order_model.dart';
+import '../../data/helper/api_helper.dart';
+import '../../data/model/order_model.dart';
 import 'order_event.dart';
 import 'order_state.dart';
 
@@ -15,7 +15,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
 
       try {
         final res = await apiHelper.getOrders();
-      //  final res = await apiHelper.getOrders();
+        //  final res = await apiHelper.getOrders();
         print("ORDER API RESPONSE: $res");
 
         if (res['status'] == true) {

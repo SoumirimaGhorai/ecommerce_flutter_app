@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../data/helper/api_helper.dart';
 import '../../../data/model/order_model.dart';
-import 'bloc/order_bloc.dart';
-import 'bloc/order_event.dart';
-import 'bloc/order_state.dart';
-import 'order_details_page.dart';
-
+import '../../../view_model_bloc/order/order_bloc.dart';
+import '../../../view_model_bloc/order/order_event.dart';
+import '../../../view_model_bloc/order/order_state.dart';
+import 'order_history/order_details_page.dart';
 
 class OrderHistoryPage extends StatefulWidget {
   const OrderHistoryPage({super.key});
@@ -16,10 +16,21 @@ class OrderHistoryPage extends StatefulWidget {
 }
 
 class _OrderHistoryPageState extends State<OrderHistoryPage> {
+  /// Calculate grand total across all orders
+  double _calculateGrandTotal(List<OrderModel> orders) {
+    return orders.fold(0, (sum, order) {
+      return sum +
+          order.products.fold(
+              0,
+                  (orderSum, item) =>
+              orderSum + double.parse(item.price) * item.quantity);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
-    /// Load orders
+    /// Load orders via BLoC
     context.read<OrderBloc>().add(FetchOrderEvent());
   }
 
@@ -38,10 +49,11 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
 
           if (state is OrderErrorState) {
             return Center(
-                child: Text(
-                  state.message,
-                  style: const TextStyle(color: Colors.red),
-                ));
+              child: Text(
+                state.message,
+                style: const TextStyle(color: Colors.red),
+              ),
+            );
           }
 
           if (state is OrderLoadedState) {
@@ -49,29 +61,51 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
               return const Center(child: Text("No orders found"));
             }
 
-            return ListView.builder(
-              padding: const EdgeInsets.all(12),
-              itemCount: state.orders.length,
-              itemBuilder: (context, index) {
-                return OrderCard(
-                  order: state.orders[index],
-                  onDelete: () {
-                    /// Local delete
-                    setState(() {
-                      state.orders.removeAt(index);
-                    });
-                  },
-                  onViewDetails: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) =>
-                            OrderDetailsPage(order: state.orders[index]),
-                      ),
-                    );
-                  },
-                );
-              },
+            final grandTotal = _calculateGrandTotal(state.orders);
+
+            return Column(
+              children: [
+                /// GRAND TOTAL DISPLAY
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16),
+                  color: Colors.grey[200],
+                  child: Text(
+                    "Grand Total: ₹ ${grandTotal.toStringAsFixed(2)}",
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ),
+
+                /// ORDER LIST
+                Expanded(
+                  child: ListView.builder(
+                    padding: const EdgeInsets.all(12),
+                    itemCount: state.orders.length,
+                    itemBuilder: (context, index) {
+                      final order = state.orders[index];
+                      return OrderCard(
+                        order: order,
+                        onDelete: () {
+                          /// Local delete & UI update
+                          setState(() {
+                            state.orders.removeAt(index);
+                          });
+                        },
+                        onViewDetails: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  OrderDetailsPage(order: order),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
             );
           }
 
@@ -82,6 +116,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
   }
 }
 
+/// Single order card widget
 class OrderCard extends StatelessWidget {
   final OrderModel order;
   final VoidCallback onDelete;
@@ -98,7 +133,8 @@ class OrderCard extends StatelessWidget {
       order.products.fold(0, (sum, item) => sum + item.quantity);
 
   double get totalAmount =>
-      order.products.fold(0, (sum, item) => sum + double.parse(item.price) * item.quantity);
+      order.products.fold(
+          0, (sum, item) => sum + double.parse(item.price) * item.quantity);
 
   @override
   Widget build(BuildContext context) {
@@ -150,8 +186,10 @@ class OrderCard extends StatelessWidget {
             const SizedBox(height: 8),
 
             /// DATE
-            Text("Date: ${order.createdAt}",
-                style: TextStyle(color: Colors.grey[600])),
+            Text(
+              "Date: ${order.createdAt}",
+              style: TextStyle(color: Colors.grey[600]),
+            ),
 
             const Divider(height: 20),
 
@@ -159,8 +197,9 @@ class OrderCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Items: $totalItems", style: const TextStyle(fontSize: 14)),
-                Text("₹ $totalAmount",
+                Text("Items: $totalItems",
+                    style: const TextStyle(fontSize: 14)),
+                Text("₹ ${totalAmount.toStringAsFixed(2)}",
                     style: const TextStyle(
                         fontSize: 16, fontWeight: FontWeight.bold)),
               ],
@@ -182,6 +221,7 @@ class OrderCard extends StatelessWidget {
     );
   }
 
+  /// Status color helper
   Color _statusColor(String status) {
     switch (status.toLowerCase()) {
       case 'pending':
